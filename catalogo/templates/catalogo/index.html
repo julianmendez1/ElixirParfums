@@ -1,0 +1,71 @@
+{% extends 'catalogo/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<!-- Hero Banner -->
+<header class="relative overflow-hidden flex items-center justify-center min-h-[60vh] border-b border-gray-100 dark:border-brand-gold/10 bg-white dark:bg-[#0a0a0a] transition-colors duration-500">
+    <!-- Decorative background elements -->
+    <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/5 dark:from-brand-dark to-transparent z-10 transition-colors duration-500"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-gold/5 via-transparent dark:via-brand-dark to-transparent dark:to-brand-dark opacity-100 transition-colors duration-500"></div>
+    </div>
+    
+    <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20 opacity-0 animate-fade-in" style="animation-delay: 0.2s;">
+        <p class="text-brand-gold tracking-[0.3em] uppercase text-xs mb-6 font-semibold">Haute Parfumerie</p>
+        <h1 class="text-5xl sm:text-7xl font-serif font-bold mb-6 tracking-tight text-gray-900 dark:text-white leading-tight transition-colors duration-500">
+            Descubre Tu <br/> <span class="italic font-light text-brand-gold">Verdadera Esencia</span>
+        </h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 font-light max-w-2xl mx-auto mb-14 transition-colors duration-500">Colecciones exclusivas importadas de las mentes brillantes del mundo.</p>
+        
+        <!-- Minimalist Search Bar -->
+        <br>
+        <form method="GET" action="{% url 'catalogo_list' %}" class="max-w-2xl mx-auto flex items-center bg-white dark:bg-[#111111]/90 backdrop-blur-md border border-gray-200 dark:border-brand-gold/30 rounded-full shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_rgba(212,175,55,0.1)]">
+            <div class="px-6 flex items-center w-full">
+                <svg class="w-5 h-5 text-gray-400 dark:text-brand-gold transition-colors duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" name="q" value="{{ query }}" placeholder="Buscar fragancia, marca..." class="w-full py-4 px-4 text-gray-900 dark:text-white bg-transparent outline-none placeholder-gray-400 dark:placeholder-gray-500 font-light text-sm transition-colors duration-500">
+            </div>
+            <button type="submit" class="bg-gray-900 dark:bg-brand-gold hover:bg-brand-gold dark:hover:bg-white text-white dark:text-[#0a0a0a] font-serif font-medium px-8 py-4 h-full uppercase tracking-widest text-xs transition-colors duration-500">
+                Buscar
+            </button>
+        </form>
+    </div>
+</header>
+
+<main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    {% if filtro_activo %}
+        <!-- Resultados Generales -->
+        <h2 class="text-3xl font-serif font-bold text-gray-900 dark:text-white mb-8 border-b border-gray-200 dark:border-brand-gold/20 pb-4 transition-colors duration-500 opacity-0 animate-fade-in" style="animation-delay: 0.3s;">
+            <span class="text-brand-gold">Explorando:</span> 
+            {% if query %}"{{ query }}"{% endif %} 
+            {% if marca_seleccionada %}{{ marca_seleccionada }}{% endif %} 
+            {% if categoria_seleccionada %}{{ categoria_seleccionada }}{% endif %}
+            
+            <a href="{% url 'catalogo_list' %}" class="text-gray-400 hover:text-brand-gold text-xs font-sans font-medium tracking-widest uppercase float-right flex items-center transition-colors duration-300 pt-3">
+                Restablecer <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </a>
+        </h2>
+        {% include 'catalogo/partials/perfume_grid.html' with queryset=perfumes %}
+    {% else %}
+        <!-- Home Blocks (Promos & Nuevos) -->
+        {% if promociones %}
+        <section class="mb-24 opacity-0 animate-slide-up" style="animation-delay: 0.3s;">
+            <h2 class="text-2xl font-serif text-gray-800 dark:text-gray-100 mb-8 border-b border-gray-200 dark:border-brand-gold/10 pb-4 flex items-center transition-colors duration-500 tracking-wide">
+                <svg class="w-5 h-5 mr-4 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                OFERTAS EXCEPCIONALES
+            </h2>
+            {% include 'catalogo/partials/perfume_grid.html' with queryset=promociones %}
+        </section>
+        {% endif %}
+
+        {% if nuevos %}
+        <section class="opacity-0 animate-slide-up" style="animation-delay: 0.5s;">
+            <h2 class="text-2xl font-serif text-gray-800 dark:text-gray-100 mb-8 border-b border-gray-200 dark:border-brand-gold/10 pb-4 flex items-center transition-colors duration-500 tracking-wide">
+                <svg class="w-5 h-5 mr-4 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                NUEVAS INCLUSIONES
+            </h2>
+            {% include 'catalogo/partials/perfume_grid.html' with queryset=nuevos %}
+        </section>
+        {% endif %}
+    {% endif %}
+</main>
+{% endblock %}
